@@ -1,0 +1,24 @@
+# depslib dependency file v1.0
+1489001195 source:d:\documents\c++\codeblocks\encodepositiondata\main.cpp
+	"main.h"
+
+1489001717 d:\documents\c++\codeblocks\encodepositiondata\main.h
+	<iostream>
+	"PositionDataIO.h"
+
+1489005108 d:\documents\c++\codeblocks\encodepositiondata\include\positiondataio.h
+	<fstream>
+	<vector>
+
+1489005406 source:d:\documents\c++\codeblocks\encodepositiondata\src\positiondataio.cpp
+	"PositionDataIO.h"
+
+1489009643 source:d:\documents\c++\codeblocks\encodepositiondata\src\csvparser.cpp
+	"CSVParser.h"
+
+1489010415 d:\documents\c++\codeblocks\encodepositiondata\include\csvparser.h
+	<string>
+	<sstream>
+	<vector>
+	<fstream>
+
