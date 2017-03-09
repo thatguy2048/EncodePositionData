@@ -1,10 +1,13 @@
 # depslib dependency file v1.0
-1489001195 source:d:\documents\c++\codeblocks\encodepositiondata\main.cpp
+1489097753 source:d:\documents\c++\codeblocks\encodepositiondata\main.cpp
 	"main.h"
 
-1489001717 d:\documents\c++\codeblocks\encodepositiondata\main.h
+1489097253 d:\documents\c++\codeblocks\encodepositiondata\main.h
 	<iostream>
-	"PositionDataIO.h"
+	"CSVData.h"
+	<limits>
+	<fstream>
+	<cmath>
 
 1489005108 d:\documents\c++\codeblocks\encodepositiondata\include\positiondataio.h
 	<fstream>
@@ -13,12 +16,23 @@
 1489005406 source:d:\documents\c++\codeblocks\encodepositiondata\src\positiondataio.cpp
 	"PositionDataIO.h"
 
-1489009643 source:d:\documents\c++\codeblocks\encodepositiondata\src\csvparser.cpp
+1489010484 source:d:\documents\c++\codeblocks\encodepositiondata\src\csvparser.cpp
 	"CSVParser.h"
 
-1489010415 d:\documents\c++\codeblocks\encodepositiondata\include\csvparser.h
-	<string>
+1489071606 d:\documents\c++\codeblocks\encodepositiondata\include\csvparser.h
+	<stdlib.h>
 	<sstream>
 	<vector>
-	<fstream>
+	<iostream>
+
+1489071996 source:d:\documents\c++\codeblocks\encodepositiondata\src\matrix.cpp
+	"Matrix.h"
+
+1489072341 d:\documents\c++\codeblocks\encodepositiondata\include\matrix.h
+
+1489078389 d:\documents\c++\codeblocks\encodepositiondata\include\csvdata.h
+	<stdlib.h>
+	<sstream>
+	<vector>
+	<iostream>
 
