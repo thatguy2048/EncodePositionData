@@ -43,27 +43,29 @@ std::vector< std::vector<T> > applyOperationToEachRow(MathOperation op, std::vec
     return mat;
 }
 
-class CSVDoubleMatrix{
+template<typename T>
+class CSVMatrix{
 public:
-    typedef std::vector<double> double_vector;
+    typedef T value_type;
+    typedef std::vector<value_type> value_vector;
+    typedef std::vector< value_vector > data_type;
 
 protected:
-    bool b_max = {true}, b_min = {true}, b_avg = {true};
-    double_vector _max, _min, _avg;
 
 public:
-    static double DBL_MAX;
+    data_type data;
+    value_type MAX_VALUE;
 
-    CSVDoubleData data;
-
-    void appendMoreData(const CSVDoubleData& moreData){
-        data.insert(data.end(), moreData.begin(), moreData.end());
-        b_max = true;
-        b_min = true;
+    CSVMatrix(){
+        MAX_VALUE = std::numeric_limits<value_type>::max();
     }
 
-    double_vector max(){
-        double_vector output;
+    void appendMoreData(const data_type& moreData){
+        data.insert(data.end(), moreData.begin(), moreData.end());
+    }
+
+    value_vector max(){
+        value_vector output;
         for(unsigned int i = 0; i< data.size(); ++i){
             while(output.size() < data[i].size())   output.push_back(0);
             for(unsigned int j = 0; j < data[i].size(); ++j){
@@ -73,10 +75,10 @@ public:
         return output;
     }
 
-    double_vector min(){
-        double_vector output;
+    value_vector min(){
+        value_vector output;
         for(unsigned int i = 0; i< data.size(); ++i){
-            while(output.size() < data[i].size())   output.push_back(DBL_MAX);
+            while(output.size() < data[i].size())   output.push_back(MAX_VALUE);
             for(unsigned int j = 0; j < data[i].size(); ++j){
                 if(output[j] > data[i][j])  output[j] = data[i][j];
             }
@@ -84,27 +86,24 @@ public:
         return output;
     }
 
-    double_vector average(){
-        if(b_avg){
-            _avg.clear();
-            double numberOfPoints = data.size();
-            for(unsigned int i = 0; i< data.size(); ++i){
-                while(_avg.size() < data[i].size())   _avg.push_back(0);
-                for(unsigned int j = 0; j < data[i].size(); ++j){
-                    _avg[j] += data[i][j]/numberOfPoints;
-                }
+    value_vector average(){
+        value_vector output;
+        for(unsigned int i = 0; i< data.size(); ++i){
+            while(output.size() < data[i].size())   output.push_back(0);
+            for(unsigned int j = 0; j < data[i].size(); ++j){
+                output[j] += data[i][j];
             }
-            b_avg = false;
         }
 
-        return _avg;
+        for(unsigned int j = 0; j < output.size(); ++j){
+            output[j] /= data.size();
+        }
+        return output;
     }
 
-    void applyToEachRow(MathOperation op, const double_vector& values){
+    void applyToEachRow(MathOperation op, const value_vector& values){
         data = applyOperationToEachRow(op, data, values);
     }
 };
-
-double CSVDoubleMatrix::DBL_MAX = std::numeric_limits<double>::max();
 
 #endif // MAIN_H_INCLUDED

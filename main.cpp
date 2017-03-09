@@ -25,11 +25,11 @@ int main(){
     cout << "Number of points: " << posData.size() << endl;
 
     CSVDoubleData posDoubleData = CSVDataToDouble(posData);;
-    CSVDoubleMatrix positionData;
+    CSVMatrix<double> positionData;
     positionData.appendMoreData(posDoubleData);
 
-    CSVDoubleMatrix::double_vector roundMax = positionData.max();
-    CSVDoubleMatrix::double_vector roundMin = positionData.min();
+    CSVMatrix<double>::value_vector roundMax = positionData.max();
+    CSVMatrix<double>::value_vector roundMin = positionData.min();
 
     cout << "Position Data MAX: " << roundMax << endl;
     cout << "Position Data Min: " << roundMin << endl;
@@ -47,12 +47,22 @@ int main(){
 
     positionData.applyToEachRow(MATH_SUB, roundMin);
     positionData.applyToEachRow(MATH_DIV, applyOperationForEachElement(MATH_SUB,roundMax,roundMin));
-    positionData.applyToEachRow(MATH_MUL, vector<double>(roundMax.size(),std::numeric_limits<short>::max()));
+    positionData.applyToEachRow(MATH_MUL, vector<double>(roundMax.size(),std::numeric_limits<unsigned short>::max()));
 
     cout << "Round position Data MAX: " << positionData.max() << endl;
     cout << "Round position Data Min: " << positionData.min() << endl;
 
+    CSVMatrix<unsigned short> shortPositionData;
+    for(unsigned int i = 0; i < positionData.data.size(); ++i){
+        CSVMatrix<unsigned short>::value_vector tmpRow;
+        for(unsigned int j = 0; j < positionData.data[i].size(); ++j){
+            tmpRow.push_back(positionData.data[i][j]);
+        }
+        shortPositionData.data.push_back(tmpRow);
+    }
 
+    cout << "Short position Data MAX: " << shortPositionData.max() << endl;
+    cout << "Short position Data Min: " << shortPositionData.min() << endl;
 
     LN();
     cout << "DONE...";
