@@ -35,13 +35,11 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
-		<Unit filename="include/CSVParser.h" />
-		<Unit filename="include/Matrix.h" />
-		<Unit filename="include/PositionDataIO.h" />
+		<Unit filename="include/BitMethods.h" />
+		<Unit filename="include/CSVData.h" />
+		<Unit filename="include/VectorMethods.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="main.h" />
-		<Unit filename="src/Matrix.cpp" />
-		<Unit filename="src/PositionDataIO.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />
