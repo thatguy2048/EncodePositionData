@@ -1,13 +1,14 @@
 # depslib dependency file v1.0
-1489099276 source:d:\documents\c++\codeblocks\encodepositiondata\main.cpp
+1489181175 source:d:\documents\c++\codeblocks\encodepositiondata\main.cpp
 	"main.h"
+	<bitset>
 
-1489099056 d:\documents\c++\codeblocks\encodepositiondata\main.h
+1489181621 d:\documents\c++\codeblocks\encodepositiondata\main.h
 	<iostream>
 	"CSVData.h"
-	<limits>
 	<fstream>
 	<cmath>
+	"BitMethods.h"
 
 1489005108 d:\documents\c++\codeblocks\encodepositiondata\include\positiondataio.h
 	<fstream>
@@ -30,9 +31,19 @@
 
 1489072341 d:\documents\c++\codeblocks\encodepositiondata\include\matrix.h
 
-1489078389 d:\documents\c++\codeblocks\encodepositiondata\include\csvdata.h
+1489181599 d:\documents\c++\codeblocks\encodepositiondata\include\csvdata.h
 	<stdlib.h>
 	<sstream>
 	<vector>
 	<iostream>
+	<limits>
+	"VectorMethods.h"
+
+1489181181 d:\documents\c++\codeblocks\encodepositiondata\include\bitmethods.h
+	<ostream>
+
+1489181531 d:\documents\c++\codeblocks\encodepositiondata\include\vectormethods.h
+	<vector>
+	<ostream>
+	<sstream>
 

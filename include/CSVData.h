@@ -5,20 +5,11 @@
 #include <sstream>
 #include <vector>
 #include <iostream>
+#include <limits>
+#include "VectorMethods.h"
 
 typedef std::vector< std::vector<std::string> > CSVData;
 typedef std::vector< std::vector<double> > CSVDoubleData;
-
-//split a string by a char delimiter into a vector of strings
-std::vector<std::string> SplitString(const std::string& str, const char& delim){
-    std::vector<std::string> output;
-    std::stringstream ss(str);
-    std::string s;
-    while(std::getline(ss, s, delim)){
-        output.push_back(s);
-    }
-    return output;
-}
 
 //Parse a stream, and add it to the provided CSVData
 CSVData& CSVDataFromStream(std::istream& in_str, CSVData& data){
@@ -42,22 +33,6 @@ std::istream& operator>>(std::istream& is, CSVData& output){
     return is;
 }
 
-//write a vector to a stream, separating the values by delim
-template<typename T>
-std::ostream& WriteVecToStream(std::ostream& os, const std::vector<T>& vec, const char& delim){
-    for(unsigned int i = 0; i < vec.size(); ++i){
-        if(i>0) os << delim;
-        os << vec[i];
-    }
-    return os;
-}
-
-//write a vector to a stream, separating the values by commas
-template<typename T>
-std::ostream& operator<<(std::ostream& os, const std::vector<T>& vec){
-    return WriteVecToStream(os,vec,',');
-}
-
 //Write the csv data back to a stream
 std::ostream& operator<<(std::ostream& os, const CSVData& data){
     return WriteVecToStream(os,data,'\n');
@@ -79,5 +54,68 @@ CSVDoubleData CSVDataToDouble(const CSVData& data){
 std::ostream& operator<<(std::ostream& os, const CSVDoubleData& data){
     return WriteVecToStream(os,data,'\n');
 }
+
+template<typename T>
+class CSVMatrix{
+public:
+    typedef T value_type;
+    typedef std::vector<value_type> value_vector;
+    typedef std::vector< value_vector > data_type;
+
+protected:
+
+public:
+    data_type data;
+    value_type MAX_VALUE;
+
+    CSVMatrix(){
+        MAX_VALUE = std::numeric_limits<value_type>::max();
+    }
+
+    void appendMoreData(const data_type& moreData){
+        data.insert(data.end(), moreData.begin(), moreData.end());
+    }
+
+    value_vector max(){
+        value_vector output;
+        for(unsigned int i = 0; i< data.size(); ++i){
+            while(output.size() < data[i].size())   output.push_back(0);
+            for(unsigned int j = 0; j < data[i].size(); ++j){
+                if(output[j] < data[i][j])  output[j] = data[i][j];
+            }
+        }
+        return output;
+    }
+
+    value_vector min(){
+        value_vector output;
+        for(unsigned int i = 0; i< data.size(); ++i){
+            while(output.size() < data[i].size())   output.push_back(MAX_VALUE);
+            for(unsigned int j = 0; j < data[i].size(); ++j){
+                if(output[j] > data[i][j])  output[j] = data[i][j];
+            }
+        }
+        return output;
+    }
+
+    value_vector average(){
+        value_vector output;
+        for(unsigned int i = 0; i< data.size(); ++i){
+            while(output.size() < data[i].size())   output.push_back(0);
+            for(unsigned int j = 0; j < data[i].size(); ++j){
+                output[j] += data[i][j];
+            }
+        }
+
+        for(unsigned int j = 0; j < output.size(); ++j){
+            output[j] /= data.size();
+        }
+        return output;
+    }
+
+    void applyToEachRow(MathOperation op, const value_vector& values){
+        data = applyOperationToEachRow(op, data, values);
+    }
+};
 
 #endif // CSVPARSER_H
