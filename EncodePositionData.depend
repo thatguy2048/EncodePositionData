@@ -1,14 +1,18 @@
 # depslib dependency file v1.0
-1489183276 source:d:\documents\c++\codeblocks\encodepositiondata\main.cpp
+1489442459 source:d:\documents\c++\codeblocks\encodepositiondata\main.cpp
 	"main.h"
 	<bitset>
 
-1489183321 d:\documents\c++\codeblocks\encodepositiondata\main.h
+1489437255 d:\documents\c++\codeblocks\encodepositiondata\main.h
 	<iostream>
 	"CSVData.h"
 	<fstream>
 	<cmath>
 	"BitMethods.h"
+	<algorithm>
+	<ctime>
+	"Encoder.h"
+	"Decoder.h"
 
 1489005108 d:\documents\c++\codeblocks\encodepositiondata\include\positiondataio.h
 	<fstream>
@@ -31,7 +35,7 @@
 
 1489072341 d:\documents\c++\codeblocks\encodepositiondata\include\matrix.h
 
-1489181599 d:\documents\c++\codeblocks\encodepositiondata\include\csvdata.h
+1489435787 d:\documents\c++\codeblocks\encodepositiondata\include\csvdata.h
 	<stdlib.h>
 	<sstream>
 	<vector>
@@ -39,11 +43,26 @@
 	<limits>
 	"VectorMethods.h"
 
-1489181181 d:\documents\c++\codeblocks\encodepositiondata\include\bitmethods.h
+1489184781 d:\documents\c++\codeblocks\encodepositiondata\include\bitmethods.h
 	<ostream>
 
-1489181531 d:\documents\c++\codeblocks\encodepositiondata\include\vectormethods.h
+1489439810 d:\documents\c++\codeblocks\encodepositiondata\include\vectormethods.h
 	<vector>
 	<ostream>
 	<sstream>
+
+1489000477 d:\documents\c++\codeblocks\encodepositiondata\include\encoder.h
+	"BitStream.h"
+	"ProbabilityModel.h"
+
+1489000477 d:\documents\c++\codeblocks\encodepositiondata\include\bitstream.h
+	<deque>
+	<cstdlib>
+
+1489000477 d:\documents\c++\codeblocks\encodepositiondata\include\probabilitymodel.h
+	<utility>
+
+1489000477 d:\documents\c++\codeblocks\encodepositiondata\include\decoder.h
+	"BitStream.h"
+	"ProbabilityModel.h"
 

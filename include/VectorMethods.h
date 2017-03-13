@@ -69,4 +69,21 @@ std::vector<std::string> SplitString(const std::string& str, const char& delim){
     return output;
 }
 
+template<typename T>
+std::pair< std::vector<T>, std::vector<T> > splitVector(const std::vector<T>& vec, unsigned int splitIndx){
+    return std::make_pair(std::vector<T>(vec.begin(),vec.begin()+splitIndx),std::vector<T>(vec.begin()+splitIndx,vec.end()));
+}
+
+template<typename T>
+std::pair<unsigned int, T> getMax(const std::vector<T>& vec){
+    unsigned int max_indx = 0;
+    for(unsigned int i = 1; i < vec.size(); ++i){
+        if(vec[max_indx] < vec[i]){
+            max_indx = i;
+        }
+    }
+    return std::make_pair(max_indx,vec[max_indx]);
+}
+
+
 #endif // VECTORMETHODS_H_INCLUDED
