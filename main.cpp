@@ -7,20 +7,8 @@
 using namespace std;
 using namespace Arithmetic;
 
-template<typename T>
-std::ostream& bitsToStream(std::ostream& os, const T& val){
-    for(unsigned int i = 8*sizeof(T); i > 0; --i){
-        os << getBit(val,(i-1));
-    }
-    return os;
-}
-
-template<typename T>
-void printBits(const T& s){
-    bitsToStream(cout, s);
-}
-
 int main(){
+    /*
     cout << "Read Data From File" << endl;
     VECTOR_MAT(unsigned char) combinedData = readCombinedDataFromFile();
     cout << "Shuffle Data" << endl;
@@ -100,7 +88,7 @@ int main(){
     unsigned int secondBitSavings = (secondLevelData.size()*8) - second_encoded_stream.numberOfBits();
     double secondPercentSavings = 100*secondBitSavings/(secondLevelData.size()*8.0);
     double secondSavingsPerMessage = secondBitSavings / (double)secondLevelData.size();
-    cout << "Second Bit Savings:\t\t" << secondBitSavings << "\t" << secondPercentSavings << "%\t" << secondSavingsPerMessage << endl;
+    cout << "Second Bit Savings:\t\t" << secondBitSavings << "\t" << secondPercentSavings << "%\t" << secondSavingsPerMessage << " bits" << endl;
 
     cout << endl << "Calculate Secondary Savings" << endl;
     double secondSavingsPerSecond = updatesPerSecond * secondSavingsPerMessage;
@@ -113,6 +101,36 @@ int main(){
     cout << "Update Messages Per Second:\t" << updatesPerSecond << endl;
     cout << "Savings/player/second:     \t" << savingsPerSecond+secondSavingsPerSecond << " bps" << endl;
 
+    cout << endl << "Combine Data Test" << endl;
+
+    typedef basic_probabilityModel<unsigned int, unsigned short, 0xFFFF> ShortProbabilityModel;
+
+    ShortProbabilityModel totalModel(false);
+    Encoder<ShortProbabilityModel> totalEncoder(&totalModel);
+
+    cout << "Create Probability Model" << endl;
+    for(unsigned int i = 0; i < combinedData.size(); ++i){
+        unsigned short tmpTotal = (combinedData[i][0]<<8) | combinedData[i][1];
+        totalModel.countValue(tmpTotal);
+    }
+
+    cout << "Encode Data" << endl;
+    for(unsigned int i = 0; i < combinedData.size(); ++i){
+        unsigned short tmpTotal = (combinedData[i][0]<<8) | combinedData[i][1];
+        totalEncoder.encodeSymbol(tmpTotal);
+    }
+
+    BitStream total_encoded_stream = totalEncoder.endEncoding();
+    cout << "Total Original Number Of Bits:\t" << combinedData.size()*16 << endl;
+    cout << "Total Encoded Number Of Bits: \t" << total_encoded_stream.numberOfBits() << endl;
+    unsigned int totalBitSavings = (combinedData.size()*16) - total_encoded_stream.numberOfBits();
+    double totalPercentSavings = 100*totalBitSavings/(combinedData.size()*16);
+    double totalSavingsPerMessage = totalBitSavings / (double)combinedData.size();
+    cout << "Total Bit Savings:\t\t" << totalBitSavings << "\t" << totalPercentSavings << "%\t" << totalSavingsPerMessage << " bits" << endl;
+
+
+*/
+    CreateNewCombinedData();
 
     cout << endl << "DONE...";
     cin.ignore();

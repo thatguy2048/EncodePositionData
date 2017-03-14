@@ -15,6 +15,19 @@
 #define COMBINED_DATA_FILE  "combinedData.csv"
 
 template<typename T>
+std::ostream& bitsToStream(std::ostream& os, const T& val){
+    for(unsigned int i = 8*sizeof(T); i > 0; --i){
+        os << GetBit(val,(i-1));
+    }
+    return os;
+}
+
+template<typename T>
+void printBits(const T& s){
+    bitsToStream(std::cout, s);
+}
+
+template<typename T>
 T Lerp(const T& start, const T& finished, float r){
     return start+r*(finished-start);
 }
@@ -92,6 +105,52 @@ template<typename T>
 void shuffleVector(VECTOR_MAT(T)& mat){
     std::srand(unsigned (std::time(0)));
     std::random_shuffle(mat.begin(), mat.end());
+}
+
+//combine the x and y data by bit, nibble, and byte, and write the result to a file.
+void CreateNewCombinedData(){
+    std::fstream posStream(DATA_FOLDER "dataAsUnsignedShort.csv", std::fstream::in);
+    std::fstream outStream(DATA_FOLDER "bitCombinedData.csv", std::fstream::out);
+    CSVData posData;
+    posStream >> posData;
+    posStream.close();
+
+    VECTOR_MAT(unsigned short) shortData = CSVDataToType<unsigned short>(posData);
+
+    std::vector<unsigned int> combinedData;
+    for(unsigned int i = 0; i < shortData.size(); ++i){
+        unsigned short A = shortData[i][0];
+        unsigned short B = shortData[i][1];
+
+        //set bits
+        unsigned int bitComb = 0;
+        for(unsigned int b = 16; b > 0; b--){
+            unsigned int cb = (b*2)-1;
+            SetBit(bitComb,GetBit(A,(b-1)),cb);
+            SetBit(bitComb,GetBit(B,(b-1)),(cb-1));
+        }
+
+        //set nibbles
+        unsigned int nibbleComb = 0;
+        for(unsigned int n = 4; n > 0; n--){
+            unsigned int cn = (n*2)-1;
+            SetNibble(nibbleComb,GetNibble(A,(n-1)),cn);
+            SetNibble(nibbleComb,GetNibble(B,(n-1)),(cn-1));
+        }
+
+        //set bytes
+        unsigned int byteComb = 0;
+        for(unsigned int b = 2; b > 0; b--){
+            unsigned int bn = (b*2)-1;
+            SetByte(byteComb,GetByte(A,(b-1)),bn);
+            SetByte(byteComb,GetByte(B,(b-1)),(bn-1));
+        }
+
+        combinedData.push_back(bitComb);
+
+        if(i > 0)   outStream << std::endl;
+        outStream << bitComb << "," << nibbleComb << "," << byteComb;
+    }
 }
 
 #endif // MAIN_H_INCLUDED
