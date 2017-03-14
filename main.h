@@ -131,6 +131,14 @@ void CreateNewCombinedData(){
         }
 
         //set nibbles
+        unsigned int crumbComb = 0;
+        for(unsigned int c = 8; c > 0; c--){
+            unsigned int cc = (c*2)-1;
+            SetCrumb(crumbComb,GetCrumb(A,(c-1)),cc);
+            SetCrumb(crumbComb,GetCrumb(B,(c-1)),(cc-1));
+        }
+
+        //set nibbles
         unsigned int nibbleComb = 0;
         for(unsigned int n = 4; n > 0; n--){
             unsigned int cn = (n*2)-1;
@@ -146,10 +154,13 @@ void CreateNewCombinedData(){
             SetByte(byteComb,GetByte(B,(b-1)),(bn-1));
         }
 
+        //set short
+        unsigned int shortComb = (A<<16) | B;
+
         combinedData.push_back(bitComb);
 
         if(i > 0)   outStream << std::endl;
-        outStream << bitComb << "," << nibbleComb << "," << byteComb;
+        outStream << bitComb << "," << crumbComb << "," << nibbleComb << "," << byteComb << "," << shortComb;
     }
 }
 

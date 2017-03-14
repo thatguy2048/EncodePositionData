@@ -12,15 +12,13 @@
 #define GetBit(number, bitNumber) ((number >> bitNumber) & 1)
 #define SetBit(number, bitValue, bitNumber) (number ^= (-bitValue ^ number) & (1 << bitNumber))
 
-//returns the n four bits of a number
-//0 returns the least significant bits.
-//nibble is in the range of 0 -> sizeof(T)*2-1
-#define GetNibble(v,n)  ((v&(0xF<<n*4)) >> (n*4))
+#define GetCrumb(v,c)  ((v&(3<<c*2)) >> (c*2))
+#define SetCrumb(value, crumb, n) (value = ((value&(~(3<<n*2))) | (crumb<<n*2)))
 
+#define GetNibble(v,n)  ((v&(0xF<<n*4)) >> (n*4))
 #define SetNibble(value, nibble, n) (value = ((value&(~(0xF<<n*4))) | (nibble<<n*4)))
 
 #define GetByte(v,b)    ((v&(0xFF<<b*8)) >> (b*8))
-
 #define SetByte(value, byte, b) (value = ((value&(~(0xFF<<b*8))) | (byte<<b*8)))
 
 //Combine the first 4 bits of a and b

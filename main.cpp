@@ -105,7 +105,7 @@ int main(){
 
     typedef basic_probabilityModel<unsigned int, unsigned short, 0xFFFF> ShortProbabilityModel;
 
-    ShortProbabilityModel totalModel(false);
+    ShortProbabilityModel totalModel(true);
     Encoder<ShortProbabilityModel> totalEncoder(&totalModel);
 
     cout << "Create Probability Model" << endl;
@@ -128,8 +128,7 @@ int main(){
     double totalSavingsPerMessage = totalBitSavings / (double)combinedData.size();
     cout << "Total Bit Savings:\t\t" << totalBitSavings << "\t" << totalPercentSavings << "%\t" << totalSavingsPerMessage << " bits" << endl;
 
-
-*/
+    */
     CreateNewCombinedData();
 
     cout << endl << "DONE...";
