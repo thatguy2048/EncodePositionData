@@ -129,7 +129,8 @@ int main(){
     cout << "Total Bit Savings:\t\t" << totalBitSavings << "\t" << totalPercentSavings << "%\t" << totalSavingsPerMessage << " bits" << endl;
 */
     //TestDataCombineMethods();
-    TestCombinedData();
+    //TestCombinedData();
+    TestCombinedDataCrumb();
 
     cout << endl << "DONE...";
     cin.ignore();

@@ -169,6 +169,7 @@ void CreateNewCombinedData(){
 struct EncodingResult{
     unsigned int totalSize;
     unsigned int numberOfBitsEncoded;
+    int mostCommon = {-1};
 
     EncodingResult(unsigned int TotalSize = 0, unsigned int NumberOfBitsEncoded = 0):totalSize(TotalSize), numberOfBitsEncoded(NumberOfBitsEncoded){}
 
@@ -181,7 +182,6 @@ struct EncodingResult{
         return os << "Original Size: " << rslt.totalBits() << "\t Encoded Size: " << rslt.numberOfBitsEncoded << "\t SPM: " << rslt.savingsPerMessage();
     }
 };
-
 
 template<typename T>
 EncodingResult TestEncodingData(const std::vector<T> data){
@@ -198,10 +198,12 @@ EncodingResult TestEncodingData(const std::vector<T> data){
     output.totalSize = data.size();
     BitStream bs = encoder.endEncoding();
     output.numberOfBitsEncoded = bs.numberOfBits();
-
+/*
     std::cout << "Most Probable: " << (int)model.getMostProbable() << "\t";
     printBits(model.getMostProbable());
     std::cout << std::endl;
+*/
+    output.mostCommon = model.getMostProbable();
 
     return output;
 }
@@ -218,9 +220,49 @@ void TestCombinedData(){
         std::vector<unsigned char> dataToEncode;
 
         for(unsigned int i = 0; i < positionData.size(); ++i){
-            dataToEncode.push_back( GetByte(positionData[i][comb],3) );
+            dataToEncode.push_back( GetByte(positionData[i][comb],3) >> 6 );
         }
         std::cout << comb << "\t" << TestEncodingData(dataToEncode) << std::endl;
+    }
+}
+
+void TestCombinedDataCrumb(){
+    std::fstream pos_stream(DATA_FOLDER "bitCombinedData.csv", std::fstream::in);
+    CSVData pos_data;
+    pos_stream >> pos_data;
+    pos_stream.close();
+
+    VECTOR_MAT(unsigned int) positionData = CSVDataToType<unsigned int>(pos_data);
+
+    unsigned int previousMostCommon = 0;
+    std::vector<unsigned int> pData;
+    std::vector<unsigned int> previousData;
+
+    std::cout << std::endl;
+    for(unsigned int crumb = sizeof(unsigned int)*4; crumb >= sizeof(unsigned int)*3+1; crumb--){
+        std::vector<unsigned char> dataToEncode;
+        unsigned int crmb = crumb-1;
+
+        if(previousData.empty()){
+            for(unsigned int i = 0; i < positionData.size(); ++i){
+                dataToEncode.push_back( GetCrumb(positionData[i][0],crmb) );
+
+            }
+        }else{
+            for(unsigned int i = 0; i < previousData.size(); ++i){
+                if(previousMostCommon == GetCrumb(previousData[i],(crmb+1) )){
+                    dataToEncode.push_back( GetCrumb(previousData[i],crmb) );
+                    pData.push_back(previousData[i]);
+                }
+            }
+        }
+
+        previousData = pData;
+        pData.clear();
+
+        EncodingResult rslt = TestEncodingData(dataToEncode);
+        previousMostCommon = rslt.mostCommon;
+        std::cout << crmb << "\t" << rslt << std::endl;
     }
 }
 
