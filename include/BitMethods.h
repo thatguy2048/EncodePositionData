@@ -21,6 +21,9 @@
 #define GetByte(v,b)    ((v&(0xFF<<b*8)) >> (b*8))
 #define SetByte(value, byte, b) (value = ((value&(~(0xFF<<b*8))) | (byte<<b*8)))
 
+#define GetShort(v,s)   ((v&(0xFFFF<<s*16)) >> (s*16))
+#define SetShort(value, short, s) (value = ((value&(~(0xFFFF<<s*16))) | (short<<s*16)))
+
 //Combine the first 4 bits of a and b
 #define FIRST4COMB(a,b) ((a&F4B)|(b>>4))
 //combine the last 4 bits of a and b
@@ -30,5 +33,11 @@
 #define FIRST4COMB_SHORT(a,b) FIRST4COMB((a>>8),(b>>8))
 //combine the second 4 bits of two shorts
 #define SECOND4COMB_SHORT(a,b) LAST4COMB((a>>8),(b>>8))
+
+//get most significant
+#define MSByte(value)   (value>>((sizeof(value)-1)*8))
+#define MSNibble(value) (MSByte(value)>>4)
+#define MSCrumb(value)  (MSNibble(value)>>2)
+#define MSBit(value)    (MSCrumb(value)>>1)
 
 #endif // BITMETHODS_H_INCLUDED

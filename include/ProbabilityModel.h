@@ -18,6 +18,9 @@ public:
 protected:
     //Store the counted values for each symbol, with the last being the total number of counted values
     count_type counts[max_size+1] = {0};
+    //To currently most probably symbol
+    symbol_type mostProbable = 0;
+    count_type mostProbableCount = 0;
 
 public:
 
@@ -31,11 +34,18 @@ public:
 
     unsigned int maxSize(){ return max_size;    }
 
+    symbol_type getMostProbable(){  return mostProbable;    }
+
     count_type totalCounts(){   return counts[max_size]; }
 
     void countValue(const symbol_type& c, unsigned int toAdd = 1){
         for(unsigned int i = c+1; i < max_size+1; ++i){
             counts[i] += toAdd;
+        }
+
+        if(counts[c+1]-counts[c] > mostProbableCount){
+            mostProbableCount = counts[c+1]-counts[c];
+            mostProbable = c;
         }
     }
 

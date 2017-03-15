@@ -111,13 +111,13 @@ void shuffleVector(VECTOR_MAT(T)& mat){
 void CreateNewCombinedData(){
     std::fstream posStream(DATA_FOLDER "dataAsUnsignedShort.csv", std::fstream::in);
     std::fstream outStream(DATA_FOLDER "bitCombinedData.csv", std::fstream::out);
+    std::fstream shortOutStream(DATA_FOLDER "bitCombinedData_short.csv", std::fstream::out);
     CSVData posData;
     posStream >> posData;
     posStream.close();
 
     VECTOR_MAT(unsigned short) shortData = CSVDataToType<unsigned short>(posData);
 
-    std::vector<unsigned int> combinedData;
     for(unsigned int i = 0; i < shortData.size(); ++i){
         unsigned short A = shortData[i][0];
         unsigned short B = shortData[i][1];
@@ -157,10 +157,130 @@ void CreateNewCombinedData(){
         //set short
         unsigned int shortComb = (A<<16) | B;
 
-        combinedData.push_back(bitComb);
-
-        if(i > 0)   outStream << std::endl;
+        if(i > 0){
+                outStream << std::endl;
+                shortOutStream << std::endl;
+        }
         outStream << bitComb << "," << crumbComb << "," << nibbleComb << "," << byteComb << "," << shortComb;
+        shortOutStream << (bitComb>>16) << "," << (crumbComb>>16) << "," << (nibbleComb>>16) << "," << (byteComb>>16) << "," << (shortComb>>16);
+    }
+}
+
+struct EncodingResult{
+    unsigned int totalSize;
+    unsigned int numberOfBitsEncoded;
+
+    EncodingResult(unsigned int TotalSize = 0, unsigned int NumberOfBitsEncoded = 0):totalSize(TotalSize), numberOfBitsEncoded(NumberOfBitsEncoded){}
+
+    unsigned int totalBits() const{   return totalSize*8;    }
+    unsigned int bitSavings() const{  return totalBits()-numberOfBitsEncoded; }
+    double savingsPercent() const{    return 100*bitSavings()/(double)totalBits(); }
+    double savingsPerMessage() const{ return bitSavings()/(double)totalSize;  }
+
+    friend std::ostream& operator<<(std::ostream& os, const EncodingResult& rslt){
+        return os << "Original Size: " << rslt.totalBits() << "\t Encoded Size: " << rslt.numberOfBitsEncoded << "\t SPM: " << rslt.savingsPerMessage();
+    }
+};
+
+
+template<typename T>
+EncodingResult TestEncodingData(const std::vector<T> data){
+    typedef basic_probabilityModel<unsigned int, T, std::numeric_limits<T>::max()> TmpProbabilityModel;
+
+    EncodingResult output;
+
+    TmpProbabilityModel model;
+    Arithmetic::Encoder<TmpProbabilityModel> encoder(&model);
+
+    for(unsigned int i = 0; i < data.size(); ++i){  model.countValue(data[i]);  }
+    for(unsigned int i = 0; i < data.size(); ++i){  encoder.encodeSymbol(data[i]);  }
+
+    output.totalSize = data.size();
+    BitStream bs = encoder.endEncoding();
+    output.numberOfBitsEncoded = bs.numberOfBits();
+
+    std::cout << "Most Probable: " << (int)model.getMostProbable() << "\t";
+    printBits(model.getMostProbable());
+    std::cout << std::endl;
+
+    return output;
+}
+
+void TestCombinedData(){
+    std::fstream pos_stream(DATA_FOLDER "bitCombinedData.csv", std::fstream::in);
+    CSVData pos_data;
+    pos_stream >> pos_data;
+    pos_stream.close();
+
+    VECTOR_MAT(unsigned int) positionData = CSVDataToType<unsigned int>(pos_data);
+
+    for(unsigned int comb = 0; comb < positionData[0].size(); comb++){
+        std::vector<unsigned char> dataToEncode;
+
+        for(unsigned int i = 0; i < positionData.size(); ++i){
+            dataToEncode.push_back( GetByte(positionData[i][comb],3) );
+        }
+        std::cout << comb << "\t" << TestEncodingData(dataToEncode) << std::endl;
+    }
+}
+
+void TestDataCombineMethods(){
+    std::cout << "Read Data From File: '" << "bitCombinedData.csv" << "'" << std::endl;
+    std::fstream pos_stream(DATA_FOLDER "bitCombinedData.csv", std::fstream::in);
+    CSVData pos_data;
+    pos_stream >> pos_data;
+    pos_stream.close();
+
+    VECTOR_MAT(unsigned int) positionData = CSVDataToType<unsigned int>(pos_data);
+
+    std::cout << "Shuffle Data" << std::endl;
+    shuffleVector(positionData);
+
+    std::cout << "Split Data" << std::endl;
+    unsigned int splitAbout = Lerp<unsigned int>(0,positionData.size(),0.9);
+
+
+
+    std::vector<EncodingResult> results;
+
+    std::cout << std::endl;
+    for(unsigned int comb = 0; comb < positionData[0].size(); comb++){
+        std::cout << "Testing Comb Type " << comb << std::endl;
+        for(unsigned int byte = 3; byte >= 2; byte--){
+            std::cout << "Testing Byte " << byte  << std::endl;
+            EncodingResult result;
+
+            ProbabilityModel model(true);
+            Arithmetic::Encoder<ProbabilityModel> encoder(&model);
+
+            for(unsigned int i = 0; i < splitAbout; ++i){
+                model.countValue(GetByte(positionData[i][comb],byte));
+            }
+
+            for(unsigned int i = splitAbout; i < positionData.size(); ++i){
+                encoder.encodeSymbol(GetByte(positionData[i][comb],byte));
+            }
+
+            BitStream encoded_stream = encoder.endEncoding();
+
+            result.totalSize = positionData.size()-splitAbout;
+            std::cout << "Total Number Of Bits: " << result.totalBits() << std::endl;
+            result.numberOfBitsEncoded = encoded_stream.numberOfBits();
+            std::cout << "Bitstream Size:       " << result.numberOfBitsEncoded << std::endl;;
+            std::cout << "Bit Savings           " << result.bitSavings() << " bits\t" << result.savingsPercent() << "%\t" << result.savingsPerMessage() << std::endl;
+
+            std::cout << std::endl;
+
+            results.push_back(result);
+        }
+    }
+
+    std::cout << "Results" << std::endl;
+
+    for(unsigned int i = 0; i < positionData[0].size(); ++i){
+        std::cout << i << "\t" << results[i*2] << std::endl;
+        std::cout << i << ".5\t" << results[i*2+1] << std::endl;
+        std::cout << "Total SPM:\t" << results[i*2+1].savingsPerMessage()+results[i*2].savingsPerMessage() << std::endl;
     }
 }
 

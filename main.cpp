@@ -127,9 +127,9 @@ int main(){
     double totalPercentSavings = 100*totalBitSavings/(combinedData.size()*16);
     double totalSavingsPerMessage = totalBitSavings / (double)combinedData.size();
     cout << "Total Bit Savings:\t\t" << totalBitSavings << "\t" << totalPercentSavings << "%\t" << totalSavingsPerMessage << " bits" << endl;
-
-    */
-    CreateNewCombinedData();
+*/
+    //TestDataCombineMethods();
+    TestCombinedData();
 
     cout << endl << "DONE...";
     cin.ignore();
