@@ -10,6 +10,7 @@
 #include <ctime>
 #include "Encoder.h"
 #include "Decoder.h"
+#include <map>
 
 #define DATA_FOLDER         "CS_Position_Information/"
 #define COMBINED_DATA_FILE  "combinedData.csv"
@@ -233,37 +234,99 @@ void TestCombinedDataCrumb(){
     pos_stream.close();
 
     VECTOR_MAT(unsigned int) positionData = CSVDataToType<unsigned int>(pos_data);
+    double currentSPM = 0.0;
 
-    unsigned int previousMostCommon = 0;
-    std::vector<unsigned int> pData;
-    std::vector<unsigned int> previousData;
+    std::vector<unsigned short> combPositionData;
+    std::vector<unsigned int> validPositions;
+    unsigned short combType = 0;
 
-    std::cout << std::endl;
-    for(unsigned int crumb = sizeof(unsigned int)*4; crumb >= sizeof(unsigned int)*3+1; crumb--){
-        std::vector<unsigned char> dataToEncode;
-        unsigned int crmb = crumb-1;
-
-        if(previousData.empty()){
-            for(unsigned int i = 0; i < positionData.size(); ++i){
-                dataToEncode.push_back( GetCrumb(positionData[i][0],crmb) );
-
-            }
-        }else{
-            for(unsigned int i = 0; i < previousData.size(); ++i){
-                if(previousMostCommon == GetCrumb(previousData[i],(crmb+1) )){
-                    dataToEncode.push_back( GetCrumb(previousData[i],crmb) );
-                    pData.push_back(previousData[i]);
-                }
-            }
-        }
-
-        previousData = pData;
-        pData.clear();
-
-        EncodingResult rslt = TestEncodingData(dataToEncode);
-        previousMostCommon = rslt.mostCommon;
-        std::cout << crmb << "\t" << rslt << std::endl;
+    for(unsigned int i = 0; i < positionData.size(); ++i){
+        combPositionData.push_back(MSShort(positionData[i][combType]));
+        validPositions.push_back(i);
     }
+
+    //generate data to encode
+    std::vector<unsigned char> toEncode;
+    for(unsigned int i = 0; i < validPositions.size(); ++i){
+        unsigned char tmp = GetNibble(combPositionData[validPositions[i]],3);
+        toEncode.push_back(tmp);
+    }
+
+    EncodingResult rslt = TestEncodingData(toEncode);
+    currentSPM += rslt.savingsPerMessage()-4;
+
+    //generate valid positions
+    std::cout << std::endl;
+    std::vector<unsigned int> newValidPositions;
+
+    for(unsigned int i = 0; i < validPositions.size(); ++i){
+        if(rslt.mostCommon == GetNibble(combPositionData[validPositions[i]],3)){
+            newValidPositions.push_back(i);
+        }
+    }
+
+    validPositions = newValidPositions;
+
+    std::cout << rslt << std::endl;
+
+    //generate data to encode
+    toEncode.clear();
+    for(unsigned int i = 0; i < validPositions.size(); ++i){
+        unsigned char tmp = GetNibble(combPositionData[validPositions[i]],2);
+        toEncode.push_back(tmp);
+    }
+
+    rslt = TestEncodingData(toEncode);
+    currentSPM += rslt.savingsPerMessage()-4;
+
+    std::cout << rslt << std::endl;
+
+
+    newValidPositions.clear();
+
+    for(unsigned int i = 0; i < validPositions.size(); ++i){
+        if(rslt.mostCommon == GetNibble(combPositionData[validPositions[i]],2)){
+            newValidPositions.push_back(validPositions[i]);
+        }
+    }
+
+    validPositions = newValidPositions;
+
+    //generate data to encode
+    toEncode.clear();
+    for(unsigned int i = 0; i < validPositions.size(); ++i){
+        unsigned char tmp = GetNibble(combPositionData[validPositions[i]],1);
+        toEncode.push_back(tmp);
+    }
+
+    rslt = TestEncodingData(toEncode);
+    currentSPM += rslt.savingsPerMessage()-4;
+
+    std::cout << rslt << std::endl;
+
+    newValidPositions.clear();
+
+    for(unsigned int i = 0; i < validPositions.size(); ++i){
+        if(rslt.mostCommon == GetNibble(combPositionData[validPositions[i]],1)){
+            newValidPositions.push_back(validPositions[i]);
+        }
+    }
+
+    validPositions = newValidPositions;
+
+    //generate data to encode
+    toEncode.clear();
+    for(unsigned int i = 0; i < validPositions.size(); ++i){
+        unsigned char tmp = GetNibble(combPositionData[validPositions[i]],0);
+        toEncode.push_back(tmp);
+    }
+
+    rslt = TestEncodingData(toEncode);
+    currentSPM += rslt.savingsPerMessage()-4;
+
+    std::cout << rslt << std::endl;
+
+    std::cout << std::endl << "Actual Total SPM: " << currentSPM << std::endl;
 }
 
 void TestDataCombineMethods(){

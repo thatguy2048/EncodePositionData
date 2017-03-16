@@ -35,6 +35,7 @@
 #define SECOND4COMB_SHORT(a,b) LAST4COMB((a>>8),(b>>8))
 
 //get most significant
+#define MSShort(value)   (value>>(((sizeof(value)/2)-1)*16))
 #define MSByte(value)   (value>>((sizeof(value)-1)*8))
 #define MSNibble(value) (MSByte(value)>>4)
 #define MSCrumb(value)  (MSNibble(value)>>2)

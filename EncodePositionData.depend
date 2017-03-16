@@ -1,9 +1,9 @@
 # depslib dependency file v1.0
-1489611953 source:d:\documents\c++\codeblocks\encodepositiondata\main.cpp
+1489692450 source:d:\documents\c++\codeblocks\encodepositiondata\main.cpp
 	"main.h"
 	<bitset>
 
-1489613953 d:\documents\c++\codeblocks\encodepositiondata\main.h
+1489691053 d:\documents\c++\codeblocks\encodepositiondata\main.h
 	<iostream>
 	"CSVData.h"
 	<fstream>
@@ -13,6 +13,7 @@
 	<ctime>
 	"Encoder.h"
 	"Decoder.h"
+	<map>
 
 1489005108 d:\documents\c++\codeblocks\encodepositiondata\include\positiondataio.h
 	<fstream>
@@ -43,7 +44,7 @@
 	<limits>
 	"VectorMethods.h"
 
-1489606542 d:\documents\c++\codeblocks\encodepositiondata\include\bitmethods.h
+1489674271 d:\documents\c++\codeblocks\encodepositiondata\include\bitmethods.h
 	<ostream>
 
 1489439810 d:\documents\c++\codeblocks\encodepositiondata\include\vectormethods.h
