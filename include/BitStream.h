@@ -2,11 +2,8 @@
 #define _BITSTREAM_H
 
 #include <deque>
-#include <cstdlib>
 
 #define NumberOfBitsInType(type) (sizeof(type)*8)
-#define GetBit(number, bitNumber) ((number >> bitNumber) & 1)
-#define SetBit(number, bitValue, bitNumber) (number ^= (-bitValue ^ number) & (1 << bitNumber))
 
 //Class to contain a stream of bit values.
 //store_type should be a Primitive Data Type.

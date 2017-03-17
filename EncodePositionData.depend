@@ -1,9 +1,9 @@
 # depslib dependency file v1.0
-1489692450 source:d:\documents\c++\codeblocks\encodepositiondata\main.cpp
+1489780550 source:d:\documents\c++\codeblocks\encodepositiondata\main.cpp
 	"main.h"
 	<bitset>
 
-1489691053 d:\documents\c++\codeblocks\encodepositiondata\main.h
+1489785067 d:\documents\c++\codeblocks\encodepositiondata\main.h
 	<iostream>
 	"CSVData.h"
 	<fstream>
@@ -44,8 +44,8 @@
 	<limits>
 	"VectorMethods.h"
 
-1489674271 d:\documents\c++\codeblocks\encodepositiondata\include\bitmethods.h
-	<ostream>
+1489785120 d:\documents\c++\codeblocks\encodepositiondata\include\bitmethods.h
+	<iostream>
 
 1489439810 d:\documents\c++\codeblocks\encodepositiondata\include\vectormethods.h
 	<vector>
@@ -56,9 +56,8 @@
 	"BitStream.h"
 	"ProbabilityModel.h"
 
-1489000477 d:\documents\c++\codeblocks\encodepositiondata\include\bitstream.h
+1489781054 d:\documents\c++\codeblocks\encodepositiondata\include\bitstream.h
 	<deque>
-	<cstdlib>
 
 1489605905 d:\documents\c++\codeblocks\encodepositiondata\include\probabilitymodel.h
 	<utility>

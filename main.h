@@ -18,7 +18,7 @@
 template<typename T>
 std::ostream& bitsToStream(std::ostream& os, const T& val){
     for(unsigned int i = 8*sizeof(T); i > 0; --i){
-        os << GetBit(val,(i-1));
+        os << GetBit<T>(val,(i-1));
     }
     return os;
 }
@@ -84,9 +84,11 @@ void preProcessPositionData(){
 
     for(unsigned int i = 0; i < shortPositionData.size(); ++i){
         if(i > 0) combinedData << std::endl;
-        unsigned char tmp = FIRST4COMB_SHORT(shortPositionData[i][0],shortPositionData[i][1]);
+        unsigned int tmpCombo =MergeBits<unsigned short, unsigned int>(shortPositionData[i][0],shortPositionData[i][1],MERGE_NIBBLE);
+
+        unsigned char tmp = GetByte(tmpCombo,3);
         combinedData << (unsigned short)tmp << ',';
-        tmp = SECOND4COMB_SHORT(shortPositionData[i][0],shortPositionData[i][1]);
+        tmp = GetByte(tmpCombo,2);//SECOND4COMB_SHORT(shortPositionData[i][0],shortPositionData[i][1]);
         combinedData << (unsigned short)tmp;
     }
 }
@@ -124,35 +126,36 @@ void CreateNewCombinedData(){
         unsigned short B = shortData[i][1];
 
         //set bits
+
         unsigned int bitComb = 0;
         for(unsigned int b = 16; b > 0; b--){
             unsigned int cb = (b*2)-1;
-            SetBit(bitComb,GetBit(A,(b-1)),cb);
-            SetBit(bitComb,GetBit(B,(b-1)),(cb-1));
+            bitComb = SetBit(bitComb,GetBit(A,(b-1)),cb);
+            bitComb = SetBit(bitComb,GetBit(B,(b-1)),(cb-1));
         }
 
         //set nibbles
         unsigned int crumbComb = 0;
         for(unsigned int c = 8; c > 0; c--){
             unsigned int cc = (c*2)-1;
-            SetCrumb(crumbComb,GetCrumb(A,(c-1)),cc);
-            SetCrumb(crumbComb,GetCrumb(B,(c-1)),(cc-1));
+            crumbComb = SetCrumb(crumbComb,GetCrumb(A,(c-1)),cc);
+            crumbComb = SetCrumb(crumbComb,GetCrumb(B,(c-1)),(cc-1));
         }
 
         //set nibbles
         unsigned int nibbleComb = 0;
         for(unsigned int n = 4; n > 0; n--){
             unsigned int cn = (n*2)-1;
-            SetNibble(nibbleComb,GetNibble(A,(n-1)),cn);
-            SetNibble(nibbleComb,GetNibble(B,(n-1)),(cn-1));
+            nibbleComb = SetNibble(nibbleComb,GetNibble(A,(n-1)),cn);
+            nibbleComb = SetNibble(nibbleComb,GetNibble(B,(n-1)),(cn-1));
         }
 
         //set bytes
         unsigned int byteComb = 0;
         for(unsigned int b = 2; b > 0; b--){
             unsigned int bn = (b*2)-1;
-            SetByte(byteComb,GetByte(A,(b-1)),bn);
-            SetByte(byteComb,GetByte(B,(b-1)),(bn-1));
+            byteComb = SetByte(byteComb,GetByte(A,(b-1)),bn);
+            byteComb = SetByte(byteComb,GetByte(B,(b-1)),(bn-1));
         }
 
         //set short
